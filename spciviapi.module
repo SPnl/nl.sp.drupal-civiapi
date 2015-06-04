@@ -5,27 +5,19 @@ function spciviapi_menu() {
 
     $items = array();
 
-    $items['admin/config/sp'] = array(
-        'title'            => 'SP',
-        'description'      => 'SP-specifieke instellingen',
-        'weight'           => -8,
-        'page callback'    => 'spciviapi_admin_block',
-        'access arguments' => array('access administration pages'),
-    );
-
     $items['admin/config/sp/civiapi'] = array(
         'title'            => 'CiviCRM-API',
         'description'      => 'Instellingen voor integratie met CiviCRM.',
         'type'             => MENU_NORMAL_ITEM,
         'page callback'    => 'drupal_get_form',
         'page arguments'   => array('spciviapi_admin_settings_form'),
-        'access arguments' => array('access administration pages'),
+        'access callback' => sprbs_access_check(),
     );
 
     $items['admin/config/sp/civiapi/settings'] = array(
         'title'            => 'Instellingen',
         'type'             => MENU_DEFAULT_LOCAL_TASK,
-        'access arguments' => array('access administration pages'),
+        'access callback' => sprbs_access_check(),
     );
 
     return $items;

@@ -11,13 +11,15 @@ function spciviapi_menu() {
     'type'             => MENU_NORMAL_ITEM,
     'page callback'    => 'drupal_get_form',
     'page arguments'   => array('spciviapi_admin_settings_form'),
-    'access callback' => sprbs_access_check(),
+    'access callback'  => 'user_access',
+    'access argument'  => array('administer site configuration'),
   );
 
   $items['admin/config/sp/civiapi/settings'] = array(
     'title'            => 'Instellingen',
     'type'             => MENU_DEFAULT_LOCAL_TASK,
-    'access callback' => sprbs_access_check(),
+    'access callback'  => 'user_access',
+    'access argument'  => array('administer site configuration'),
   );
 
   return $items;

@@ -3,3 +3,4 @@ description = Toegang tot de CiviCRM-API voor SP.nl
 version = 1.0
 core = 7.x
 package = sprbs
+dependencies[] = sprbs

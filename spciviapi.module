@@ -1,96 +1,93 @@
 <?php
 
-// Implements hook_menu
+/**
+ * Implements hook_menu().
+ * @return array Menu items
+ */
 function spciviapi_menu() {
 
-    $items = array();
+  $items = array();
 
-    $items['admin/config/sp'] = array(
-        'title'            => 'SP',
-        'description'      => 'SP-specifieke instellingen',
-        'weight'           => -8,
-        'page callback'    => 'spciviapi_admin_block',
-        'access arguments' => array('access administration pages'),
-    );
+  $items['admin/config/sp/civiapi'] = array(
+    'title'            => 'CiviCRM-API',
+    'description'      => 'Instellingen voor integratie met CiviCRM.',
+    'type'             => MENU_NORMAL_ITEM,
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('spciviapi_admin_settings_form'),
+    'access callback'  => sprbs_access_check(),
+  );
 
-    $items['admin/config/sp/civiapi'] = array(
-        'title'            => 'CiviCRM-API',
-        'description'      => 'Instellingen voor integratie met CiviCRM.',
-        'type'             => MENU_NORMAL_ITEM,
-        'page callback'    => 'drupal_get_form',
-        'page arguments'   => array('spciviapi_admin_settings_form'),
-        'access arguments' => array('access administration pages'),
-    );
+  $items['admin/config/sp/civiapi/settings'] = array(
+    'title'            => 'Instellingen',
+    'type'             => MENU_DEFAULT_LOCAL_TASK,
+    'access callback'  => sprbs_access_check(),
+  );
 
-    $items['admin/config/sp/civiapi/settings'] = array(
-        'title'            => 'Instellingen',
-        'type'             => MENU_DEFAULT_LOCAL_TASK,
-        'access arguments' => array('access administration pages'),
-    );
-
-    return $items;
+  return $items;
 }
 
-// Include CiviCRM API class and return civicrm_api3
-function spciviapi_get_api() {
-    global $spciviapi_api;
-    if(!$spciviapi_api) {
-        require_once('civicrm_api.php');
-        $spciviapi_api = new civicrm_api3(array(
-            'server'  => variable_get('spciviapi_civicrm_server'),
-            'path'    => variable_get('spciviapi_civicrm_path'),
-            'key'     => variable_get('spciviapi_civicrm_key'),
-            'api_key' => variable_get('spciviapi_civicrm_userkey'),
-        ));
-    }
-    return $spciviapi_api;
+/**
+ * Legacy method to get a CiviCRM API class with the correct settings.
+ * @param bool $local Does CiviCRM run locally or remotely?
+ * @return \civicrm_api3 CiviCRM API 3 class
+ */
+function spciviapi_get_api($local = false) {
+
+    $spcivi = \SPCivi::getInstance($local);
+    return $spcivi->getApi();
 }
 
-// API settings form
+/**
+ * CiviCRM API settings form for remote installations.
+ * @return array Form
+ */
 function spciviapi_admin_settings_form() {
 
-    $form = array();
+  $form = array();
 
-    $form['spciviapi_description_civicrm'] = array(
-        '#markup' => '<h3>Instellingen</h3><p>Stel hieronder de API-instellingen in voor de integratie met CiviCRM.</p>',
-    );
+  $form['spciviapi_description_civicrm'] = array(
+    '#markup' => '<h3>Instellingen</h3><p>Stel hieronder de API-instellingen in voor de integratie met CiviCRM.</p>',
+  );
 
-    $form['spciviapi_civicrm_server'] = array(
-        '#type'          => 'textfield',
-        '#title'         => 'Server',
-        '#default_value' => variable_get('spciviapi_civicrm_server', 'https://test.civicrm.sp.nl'),
-        '#description'   => 'URL van de CiviCRM-installatie.',
-        '#required'      => true,
-    );
+  $form['spciviapi_civicrm_server'] = array(
+    '#type'          => 'textfield',
+    '#title'         => 'Server',
+    '#default_value' => variable_get('spciviapi_civicrm_server', 'https://test.civicrm.sp.nl'),
+    '#description'   => 'URL van de CiviCRM-installatie.',
+    '#required'      => true,
+  );
 
-    $form['spciviapi_civicrm_path'] = array(
-        '#type'          => 'textfield',
-        '#title'         => 'API-pad',
-        '#default_value' => variable_get('spciviapi_civicrm_path', 'sites/test/modules/civicrm/extern/rest.php'),
-        '#description'   => 'Pad naar de API (bijvoorbeeld: sites/test/modules/civicrm/extern/rest.php)',
-        '#required'      => true,
-    );
+  $form['spciviapi_civicrm_path'] = array(
+    '#type'          => 'textfield',
+    '#title'         => 'API-pad',
+    '#default_value' => variable_get('spciviapi_civicrm_path', 'sites/test/modules/civicrm/extern/rest.php'),
+    '#description'   => 'Pad naar de API (bijvoorbeeld: sites/test/modules/civicrm/extern/rest.php)',
+    '#required'      => true,
+  );
 
-    $form['spciviapi_civicrm_key'] = array(
-        '#type'          => 'textfield',
-        '#title'         => 'Key',
-        '#default_value' => variable_get('spciviapi_civicrm_key'),
-        '#description'   => 'CiviCRM-key (uit civicrm.settings.php).',
-        '#required'      => true,
-    );
+  $form['spciviapi_civicrm_key'] = array(
+    '#type'          => 'textfield',
+    '#title'         => 'Key',
+    '#default_value' => variable_get('spciviapi_civicrm_key'),
+    '#description'   => 'CiviCRM-key (uit civicrm.settings.php).',
+    '#required'      => true,
+  );
 
-    $form['spciviapi_civicrm_userkey'] = array(
-        '#type'          => 'textfield',
-        '#title'         => 'User-key',
-        '#default_value' => variable_get('spciviapi_civicrm_userkey'),
-        '#description'   => 'CiviCRM API-key (uit civicrm_contact).',
-        '#required'      => true,
-    );
+  $form['spciviapi_civicrm_userkey'] = array(
+    '#type'          => 'textfield',
+    '#title'         => 'User-key',
+    '#default_value' => variable_get('spciviapi_civicrm_userkey'),
+    '#description'   => 'CiviCRM API-key (uit civicrm_contact).',
+    '#required'      => true,
+  );
 
-    return system_settings_form($form);
+  return system_settings_form($form);
 }
 
-// Admin block function
+/**
+ * Admin block function. (Block links are added by other modules)
+ * @return null
+ */
 function spciviapi_admin_block() {
-	return null;
+  return null;
 }

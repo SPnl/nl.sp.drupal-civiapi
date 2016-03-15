@@ -94,7 +94,7 @@ class SPCivi {
    * @return int CustomField id
    * @throws \CiviCRM_API3_Exception Exception
    */
-  protected function getCustomFieldId($groupName, $fieldName) {
+  public function getCustomFieldId($groupName, $fieldName) {
 
     $cacheKey = $groupName . '_' . $fieldName;
     if (array_key_exists($cacheKey, $this->customFieldsCache)) {
@@ -111,6 +111,38 @@ class SPCivi {
     $this->customFieldsCache[ $cacheKey ] = $fieldId;
 
     return $fieldId;
+  }
+
+  /**
+   * Find a custom group ID by name
+   * @param string $groupName CustomGroup name
+   * @return int CustomGroup id
+   * @throws \CiviCRM_API3_Exception Exception
+   */
+  public function getCustomGroupId($groupName) {
+
+    if (array_key_exists($groupName, $this->customGroupCache)) {
+      return $this->customGroupCache[ $groupName ];
+    };
+
+    $groupId = $this->api('CustomGroup', 'getvalue', ['name' => $groupName, 'return' => 'id']);
+    $this->customGroupCache[ $groupName ] = $groupId;
+
+    return $groupId;
+  }
+
+  /**
+   * Haal een relationship type id op basis van een naam op
+   * @param string $name_a_b Name_A_B
+   * @return int|bool Relationship Type ID or false
+   */
+  public function getRelationshipTypeIdByNameAB($name_a_b) {
+    try {
+      $result = $this->api('RelationshipType', 'getsingle', array('name_a_b' => $name_a_b));
+      return $result['id'];
+    } catch (\CiviCRM_API3_Exception $e) {
+      return FALSE;
+    }
   }
 
   /**
@@ -143,38 +175,6 @@ class SPCivi {
     }
 
     return $return;
-  }
-
-  /**
-   * Find a custom group ID by name
-   * @param string $groupName CustomGroup name
-   * @return int CustomGroup id
-   * @throws \CiviCRM_API3_Exception Exception
-   */
-  protected function getCustomGroupId($groupName) {
-
-    if (array_key_exists($groupName, $this->customGroupCache)) {
-      return $this->customGroupCache[ $groupName ];
-    };
-
-    $groupId = $this->api('CustomGroup', 'getvalue', ['name' => $groupName, 'return' => 'id']);
-    $this->customGroupCache[ $groupName ] = $groupId;
-
-    return $groupId;
-  }
-
-  /**
-   * Haal een relationship type id op basis van een naam op
-   * @param string $name_a_b Name_A_B
-   * @return int|bool Relationship Type ID or false
-   */
-  protected function getRelationshipTypeIdByNameAB($name_a_b) {
-    try {
-      $result = $this->api('RelationshipType', 'getsingle', array('name_a_b' => $name_a_b));
-      return $result['id'];
-    } catch (\CiviCRM_API3_Exception $e) {
-      return FALSE;
-    }
   }
 
 }

@@ -80,6 +80,14 @@ class SPCivi {
   }
 
   /**
+   * Get the CiviCRM API class. (Fix + didn't notice more modules used this function)
+   * @return \civicrm_api3 API class
+   */
+  public function getApi() {
+    return $this->apiClass;
+  }
+
+  /**
    * Find a custom field ID by name
    * @param string $groupName CustomGroup name
    * @param string $fieldName CustomField name

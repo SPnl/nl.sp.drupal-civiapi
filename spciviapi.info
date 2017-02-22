@@ -1,6 +1,6 @@
 name = SP CiviCRM API Access
 description = Shared module to make the CiviCRM API available to other SP Drupal sites. New version that includes the \SPCivi class to access the api both locally and remotely.
-version = 2.0
+version = 2.1
 core = 7.x
 package = sprbs
 dependencies[] = sprbs

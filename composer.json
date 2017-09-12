@@ -1,0 +1,14 @@
+
+{
+  "name": "SPnl/nl.sp.drupal-civiapi",
+  "description": "Shared module to make the CiviCRM API available to other SP Drupal sites. New version that includes the \SPCivi class to access the api both locally and remotely.",
+  "version": "2.0.1",
+  "type": "drupal-module",
+  "authors": [
+    {
+      "name": "Kevin Levie",
+      "email": "kevin@levity.nl"
+    }
+  ],
+  "license": "AGPL-3.0"
+}

@@ -1,8 +1,8 @@
 
 {
-  "name": "SPnl/nl.sp.drupal-civiapi",
+  "name": "spnl/nl.sp.drupal-civiapi",
   "description": "Shared module to make the CiviCRM API available to other SP Drupal sites. New version that includes the SPCivi class to access the api both locally and remotely.",
-  "type": "drupal-module",
+  "type": "drupal-custom-module",
   "authors": [
     {
       "name": "Kevin Levie",

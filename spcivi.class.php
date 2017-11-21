@@ -155,13 +155,17 @@ class SPCivi {
 
     $aclContactCache = \Civi::service('acl_contact_cache');
     $aclWhere = $aclContactCache->getAclWhereClause(CRM_Core_Permission::VIEW, 'contact_a');
+    if (!empty($aclWhere)) {
+      $aclWhere = ' AND ' . $aclWhere;
+    }
     $aclFrom = $aclContactCache->getAclJoin(CRM_Core_Permission::VIEW, 'contact_a');
 
     $params = [];
     $sql    = "SELECT contact_a.id, contact_a.display_name
           FROM civicrm_contact contact_a
           {$aclFrom}
-          WHERE contact_a.contact_type = 'Individual' AND contact_a.is_deleted = 0 AND contact_a.is_deceased = 0 AND {$aclWhere}
+          WHERE contact_a.contact_type = 'Individual' AND contact_a.is_deleted = 0 AND contact_a.is_deceased = 0
+          {$aclWhere}
           ";
     if (!empty($string)) {
       $sql .= " AND (contact_a.display_name LIKE %1 OR contact_a.sort_name LIKE %1 OR CONVERT(contact_a.id, CHAR) LIKE %1)";

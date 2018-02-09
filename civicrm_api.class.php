@@ -160,13 +160,14 @@ class civicrm_api3 {
   function remoteCall($entity, $action, $params = array()) {
     $fields = "key={$this->key}&api_key={$this->api_key}";
     $query = $this->uri . "&entity=$entity&action=$action";
-    $fields .= '&' . http_build_query($params, '', '&'); // CRM-17026
+    //$fields .= '&' . http_build_query($params, '', '&'); // CRM-17026
+    $fields .= '&json=' . json_encode($params);
     if (function_exists('curl_init')) {
       // To facilitate debugging without leaking info, entity & action
       // are GET, other data is POST.
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $query);
-      curl_setopt($ch, CURLOPT_POST, count($params) + 2);
+      curl_setopt($ch, CURLOPT_POST, 3);
       curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
       $result = curl_exec($ch);

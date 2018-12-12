@@ -158,15 +158,12 @@ class civicrm_api3 {
    *
    */
   function remoteCall($entity, $action, $params = array()) {
-    watchdog('test', 'params:<pre>' . $params . '</pre>');
     $fields = "key={$this->key}&api_key={$this->api_key}";
     $query = $this->uri . "&entity=$entity&action=$action";
     //$fields .= '&' . http_build_query($params, '', '&'); // CRM-17026
     $fields .= '&json=' . urlencode(json_encode($params));
     //$fields = urlencode($fields);
-    watchdog('test', 'fields:<pre>' . $fields . '</pre>');
     if (function_exists('curl_init')) {
-      watchdog('test', 'using curl');
       // To facilitate debugging without leaking info, entity & action
       // are GET, other data is POST.
       $ch = curl_init();
@@ -187,7 +184,6 @@ class civicrm_api3 {
       curl_close($ch);
     }
     else {
-      watchdog('test', 'using file_get_contents');
       // Should be discouraged, because the API credentials and data
       // are submitted as GET data, increasing chance of exposure..
       $result = file_get_contents($query . '&' . $fields);

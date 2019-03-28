@@ -154,11 +154,7 @@ class SPCivi {
   public function getContactAutoCompleteData($string = '') {
 
     $aclContactCache = \Civi::service('acl_contact_cache');
-    $aclWhere = $aclContactCache->getAclWhereClause(CRM_Core_Permission::VIEW, 'contact_a');
-    if (!empty($aclWhere)) {
-      $aclWhere = ' AND ' . $aclWhere;
-    }
-    $aclFrom = $aclContactCache->getAclJoin(CRM_Core_Permission::VIEW, 'contact_a');
+    list($aclFrom, $aclWhere) = CRM_Contact_BAO_Contact_Permission::cacheClause();
 
     $params = [];
     $sql    = "SELECT contact_a.id, contact_a.display_name

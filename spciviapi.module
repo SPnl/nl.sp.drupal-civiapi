@@ -14,16 +14,34 @@ function spciviapi_menu() {
     'type'             => MENU_NORMAL_ITEM,
     'page callback'    => 'drupal_get_form',
     'page arguments'   => array('spciviapi_admin_settings_form'),
-    'access callback'  => 'sprbs_access_check',
+    'access callback'  => 'spciviapi_access_check',
   );
 
   $items['admin/config/sp/civiapi/settings'] = array(
     'title'            => 'Instellingen',
     'type'             => MENU_DEFAULT_LOCAL_TASK,
-    'access callback'  => 'sprbs_access_check',
+    'access callback'  => 'spciviapi_access_check',
   );
 
   return $items;
+}
+
+/**
+ * @return bool Has SPRBS configuration access
+ */
+function spciviapi_access_check() {
+  return (user_access('administer site configuration') || user_access('administer sp civiapi'));
+}
+
+/**
+ * Definces permission to administer webformsync.
+ */
+function spciviapi_permission() {
+  return array(
+    'administer sp civiapi' => array(
+      'title' => 'Beheer SP CiviAPI',
+    ),
+  );
 }
 
 /**
